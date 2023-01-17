@@ -19,6 +19,30 @@ YTest(find(YTest==0))=1;
 
 % apelul functiei kmeans si plotarea rezultatelor
 [idx, C] = kmeans(XNew, 3);
+%idx este vector care contine valorile predicted
+%YNew sunt actual value
+confusionchart(idx, YNew);%practic imi calculeaza matricea suspecta de predictie
+tabulate(idx)
+tabulate(YNew)
+
+for labelClasses = 1:3
+    idxTP = ((YNew == labelClasses) & (idx==labelClasses));
+    idxTN = ((YNew ~= labelClasses) & (idx~=labelClasses));
+    idxFP = ((YNew == labelClasses) & (idx~=labelClasses));
+    idxFN = ((YNew ~= labelClasses) & (idx==labelClasses));
+
+
+    TP=sum(idxTP);
+    TN=sum(idxTN);
+    FP=sum(idxFP);
+    FN=sum(idxFN);
+    
+    Acc(labelClasses)=(TP+TN)/(TP+TN+FN+FP);
+    Rec(labelClasses) = TP / (TP+FN);
+    Spec(labelClasses) = TN/(FP+TN);
+    Prec(labelClasses) = TP/(TP+FP);
+    F1sc(labelClasses) = 2*TP/(2*TP + FN +FP);
+end
 figure(),
 gscatter(XNew(:,2),XNew(:,9),idx,'rgb')
 hold on
